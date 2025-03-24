@@ -36,11 +36,13 @@ public class AccountService {
     }
 
     //create
-    public void createAccount(Account account){
+    public Account createAccount(Account account){
         if(accountValidation(account)){
             System.out.println("Account created!");
             accountDAO.createAccount(account); 
+            return account;
         }
+        return null;
     } 
 
     //read
@@ -49,11 +51,12 @@ public class AccountService {
     }
 
     public Account getAccountByID(int id){
-        if(accountDAO.getAccountById(id) == null){
-            System.out.println("Account ID " + id + " does not exist.");
-            return null;
-        }
+ 
         return accountDAO.getAccountById(id);
+    }
+
+    public Account getAccountByUsername(String username){
+        return accountDAO.getAccountByUsername(username);
     }
 
     //update

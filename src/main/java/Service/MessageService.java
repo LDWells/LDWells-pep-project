@@ -33,11 +33,13 @@ public class MessageService {
     }
     
     //create
-    public void createMessage(Message message) {
+    public Message createMessage(Message message) {
         if(messageValidation(message)){
             System.out.println("Message created!");
             messageDAO.createMessage(message);
+            return message;
         }
+        return null;
     }
     
     //read
@@ -53,26 +55,24 @@ public class MessageService {
         return messageDAO.getAllMessagesByUser(account_id);
     }
 
-    //update
-    public boolean updateMessage(int id, Message message){
-        if(messageValidation(message)){
-            messageDAO.updateMessage(id, message);
-            message.setMessage_id(id);
-            return true;
-        }
-        return false;
+
+    public Message getMessageByID(int message_id){
+
+        return messageDAO.getMessageById(message_id);
     }
 
+    //update
+    public Message updateMessage(int id, Message message) {
+        if (messageValidation(message) && messageDAO.getMessageById(id) != null) {
+            Message updatedMessage = messageDAO.updateMessage(id, message);
+            return updatedMessage;  // Ensure the DAO returns the updated message with the correct ID.
+        }
+        return null;
+    
+}
+
     //delete
-    public boolean deleteMessage(int id){
-        if(messageDAO.getMessageById(id) != null){
-            messageDAO.deleteMessage(id);
-            System.out.println("Message ID " + id + " has been deleted!");
-            return true;
-        }
-        else{
-            System.out.println("Message ID " + id + " does not exist!");
-            return false;
-        }
+    public Message deleteMessage(int id){
+        return messageDAO.deleteMessage(id);
     }
 }
