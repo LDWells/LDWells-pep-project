@@ -9,24 +9,35 @@ public class AccountService {
 
 
     public AccountService(){
-        accountDAO = new AccountDAO(); //dependency injection
+        accountDAO = new AccountDAO(); 
     }
 
     public AccountService(AccountDAO accountDAO){
-        this.accountDAO = accountDAO;
+        this.accountDAO = accountDAO; //dependency injection
+    }
+
+    public boolean accountValidation(Account account){
+        boolean accountCreated = false;
+        if(account.getUsername().isEmpty()){
+            System.out.println("You must enter a username!");
+        }
+        else if(accountDAO.findAccountByUserName(account.getUsername()) != null){
+            System.out.println("An account with this username already exists!");
+
+        }
+        else if(account.getPassword().isEmpty() || account.getPassword().length() < 4){
+            System.out.println("You must enter a password that is at least 4 characters long!");
+        }
+        else{
+            accountCreated = true;
+        }
+
+        return accountCreated;
     }
 
     //create
     public void createAccount(Account account){
-        if(account.getUsername() == ""){
-            System.out.println("You must enter a username!");
-            //return null;
-        }
-        else if(account.getPassword() == ""){
-            System.out.println("You must enter a password!");
-            //return null;
-        }
-        else{
+        if(accountValidation(account)){
             System.out.println("Account created!");
             accountDAO.createAccount(account); 
         }
@@ -49,13 +60,15 @@ public class AccountService {
     public boolean updateAccount(int id, Account account){
         if(accountDAO.getAccountById(id) == null){
             System.out.println("Account ID " + id + " does not exist.");
-            return false;
         }
-        else{
+        
+        if(accountValidation(account)){
             accountDAO.updateAccount(id, account);
             account.setAccount_id(id);
             return true;
         }
+        
+        return false;
     }
     //delete
     public boolean deleteAccount(int id){
